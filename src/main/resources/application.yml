@@ -1,0 +1,12 @@
+server:
+  port: 6060
+
+spring:
+  application:
+    name: Spring security example
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://idp.example.com/issuer
+
