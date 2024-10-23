@@ -10,3 +10,7 @@ spring:
 #        jwt:
 #          issuer-uri: https://idp.example.com/issuer
 
+app:
+  secretKey: p677MDcRosSDVUd2y6tcJdvVRXld9PZKT1F4GRugbC7vufAY3LWwM1AQToe+gI78/aPrQPaQrVtb8OhsDSIQmQ==
+  expirationMilliseconds: 604800000
+
