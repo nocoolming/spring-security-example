@@ -10,7 +10,6 @@ import org.ming.example.spring.security.config.JwtConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -78,12 +77,6 @@ public class JwtTokenProvider {
             return false;
         }
     }
-
-    @Value("${app.secretKey}")
-    private String secretKey;
-
-    @Value("${app.expirationMilliseconds}")
-    private Long expirationMilliseconds;
 
     private Key keyInstance ;
     private Key key(){
