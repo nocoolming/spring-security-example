@@ -1,6 +1,7 @@
 package org.ming.example.spring.security.config;
 
 import org.ming.example.spring.security.security.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private PermissionConfig permissionConfig;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -30,11 +31,28 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/signIn", "signOn", "forgetPassword").permitAll()  // 允许 /api/auth/** 请求不需要认证
-                        .anyRequest().authenticated()  // 其他请求需要认证
+                .authorizeHttpRequests(auth -> {
+                            auth
+                                    .requestMatchers("/signIn", "signOn", "forgetPassword").permitAll();
+
+
+                            auth.requestMatchers("/admin/**").hasRole ("ADMIN");
+                            auth.requestMatchers("/user/**").hasRole ("USER");
+
+                            auth// 允许 /api/auth/** 请求不需要认证
+                                    .anyRequest().authenticated();  // 其他请求需要认证
+
+
+                        }
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // 添加 JWT 过滤器
+
+
+        // 动态加载权限规则
+//        for (PermissionConfig.PermissionRule rule : permissionConfig.getRules()) {
+//            String[] roles = rule.getRoles().toArray(new String[0]);
+////            http.authorizeRequests().antMatchers(rule.getPath()).hasAnyRole(roles);
+//        }
 
         return http.build();
     }

@@ -14,3 +14,23 @@ app:
   secretKey: p677MDcRosSDVUd2y6tcJdvVRXld9PZKT1F4GRugbC7vufAY3LWwM1AQToe+gI78/aPrQPaQrVtb8OhsDSIQmQ==
   expirationMilliseconds: 604800000
 
+logging:
+  level:
+    com.zaxxer: INFO
+    org.apache: INFO
+    org.apache.ibatis: INFO
+    org.springframework: DEBUG
+    com.ming: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+    file: "%d %p %c{1.} [%t] %m%n"
+  file: app.log
+#security:
+#  permissions:
+#    - path: "/admin/**"
+#      roles: ["ADMIN"]
+#    - path: "/user/**"
+#      roles: ["USER", "ADMIN"]
+#    - path: "/public/**"
+#      roles: ["GUEST", "USER", "ADMIN"]
+
