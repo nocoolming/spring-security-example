@@ -36,8 +36,8 @@ public class SecurityConfig {
                                     .requestMatchers("/signIn", "signOn", "forgetPassword").permitAll();
 
 
-                            auth.requestMatchers("/admin/**").hasRole ("ADMIN");
-                            auth.requestMatchers("/user/**").hasRole ("USER");
+                            auth.requestMatchers("/admin").hasRole ("ADMIN");
+                            auth.requestMatchers("/user").hasRole ("USER");
 
                             auth// 允许 /api/auth/** 请求不需要认证
                                     .anyRequest().authenticated();  // 其他请求需要认证
