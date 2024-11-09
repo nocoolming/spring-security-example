@@ -1,5 +1,6 @@
 package org.ming.example.spring.security.config;
 
+import jakarta.servlet.DispatcherType;
 import org.ming.example.spring.security.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.*;
+import static org.springframework.security.authorization.AuthorizationManagers.allOf;
+import static jakarta.servlet.DispatcherType.*;
 
 
 @Configuration
@@ -32,15 +38,16 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                            auth
-                                    .requestMatchers("/signIn", "signOn", "forgetPassword").permitAll();
+                            auth.dispatcherTypeMatchers(FORWARD, ERROR).permitAll();
+                            auth.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll();
+                            auth.requestMatchers("/signIn", "signOn", "forgetPassword").permitAll();
 
 
-                            auth.requestMatchers("/admin").hasRole ("ADMIN");
-                            auth.requestMatchers("/user").hasRole ("USER");
-
-                            auth// 允许 /api/auth/** 请求不需要认证
-                                    .anyRequest().authenticated();  // 其他请求需要认证
+                            auth.requestMatchers("/admin").access(allOf(hasAnyAuthority("ADMIN", "USER")));
+//                            auth.requestMatchers("/admin").hasAnyAuthority("ADMIN", "USER");
+                            auth.requestMatchers("/user").hasAnyRole("USER", "ADMIN");
+//                            auth.requestMatchers("/db/**").access(allOf(hasAnyAuthority("ADMIN", "USER"), hasAnyRole("ADMIN", "USER")));
+                            auth.anyRequest().authenticated();
 
 
                         }
